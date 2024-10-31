@@ -1,0 +1,8 @@
+rootProject.name = 'mind-share-api'
+include 'app-platform-api'
+include 'client-core'
+include 'domain-user'
+include 'domain-system'
+include 'system-core'
+
+

@@ -1,0 +1,103 @@
+buildscript {
+    ext {
+        springBootVersion = '3.2.0'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+bootJar.enabled = false
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.mindshare'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '17'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // 공통 dependencies
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        // Jakarta Validation
+        implementation 'jakarta.validation:jakarta.validation-api:3.0.2' // Jakarta Validation
+        implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final' // Hibernate Validator
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project(':app-platform-api') {
+    dependencies {
+        implementation project(':client-core')
+        implementation project(':domain-user')
+        implementation project(':domain-system')
+        implementation project(':system-core')
+    }
+}
+
+project(':client-core') {
+    bootJar {
+        enabled=false
+    }
+
+    dependencies {
+        implementation project(':system-core')
+    }
+}
+
+project(':domain-user') {
+    bootJar {
+        enabled=false
+    }
+
+    dependencies {
+        implementation project(':domain-system')
+    }
+}
+
+project(':domain-system') {
+    bootJar {
+        enabled=false
+    }
+}
+
+project(':system-core') {
+    bootJar {
+        enabled=false
+    }
+}
