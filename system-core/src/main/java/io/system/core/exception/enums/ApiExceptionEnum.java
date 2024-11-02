@@ -15,6 +15,7 @@ public enum ApiExceptionEnum implements PublicException {
 
   // 403: 콘텐츠에 접근할 권리 없음 -> 서버는 클라이언트가 누군지 알고 있음
   FORBIDDEN("E40300000", HttpStatus.FORBIDDEN),
+  ARTICLE_REQUEST_FORBIDDEN("E40300001", HttpStatus.FORBIDDEN),
 
   // 404: 요청받은 리소스를 찾을 수 없음
   NOT_FOUND("E40400000", HttpStatus.NOT_FOUND),

@@ -2,9 +2,9 @@ package com.mindshare.app.platform.api.service.board.impl;
 
 import com.mindshare.app.platform.api.dto.board.ArticleCreateRequestDto;
 import com.mindshare.app.platform.api.dto.board.ArticleDetailResponseDto;
+import com.mindshare.app.platform.api.dto.board.ArticleUpdateRequestDto;
 import com.mindshare.app.platform.api.repository.ArticleRepository;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
-import com.mindshare.app.platform.api.repository.UserRepository;
 import com.mindshare.app.platform.api.securityUser.SecurityUser;
 import com.mindshare.app.platform.api.service.SecurityServiceImpl;
 import com.mindshare.app.platform.api.service.board.ArticleService;
@@ -12,6 +12,7 @@ import com.mindshare.domain.board.entity.Article;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
 import io.client.core.dto.CreateResponseDto;
+import io.client.core.dto.SuccessResponseDto;
 import io.system.core.exception.ApiException;
 import io.system.core.exception.enums.ApiExceptionEnum;
 import jakarta.servlet.http.Cookie;
@@ -34,7 +35,6 @@ import java.util.List;
 public class ArticleServiceImpl implements ArticleService {
 
   private final ArticleRepository articleRepository;
-  private final UserRepository userRepository;
   private final CategoryRepository categoryRepository;
 
   @Value("${cookie.article.view_count}")
@@ -103,6 +103,30 @@ public class ArticleServiceImpl implements ArticleService {
     return this.getDetailResponse(article, user);
   }
 
+  @Override
+  public SuccessResponseDto updateOne(BigInteger articleId, ArticleUpdateRequestDto body) {
+
+    // 사용자 정보 가져오기
+    User user = this.getUser();
+
+    // 게시글 가져오기
+    Article article = articleRepository.findById(articleId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.ARTICLE_NOT_FOUND));
+
+    // 본인 글만 수정 가능
+    if(!article.isMine(user)) {
+      throw new ApiException(ApiExceptionEnum.ARTICLE_REQUEST_FORBIDDEN);
+    }
+
+    // 게시글 수정
+    article.update(body.getTitle(), body.getContent());
+    articleRepository.save(article);
+
+    return SuccessResponseDto.builder()
+        .success(true)
+        .build();
+  }
+
   private User getUser() {
     SecurityUser securityUser = SecurityServiceImpl.getSecurityUserByToken();
     return securityUser.getUser();
@@ -110,6 +134,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   private ArticleDetailResponseDto getDetailResponse(Article article, User user) {
 
+    // 원글 response dto 생성
     ArticleDetailResponseDto.ArticleDetailResponseDtoBuilder builder = ArticleDetailResponseDto.builder();
     builder
         .id(article.getArticleId().toString())
@@ -124,6 +149,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     List<ArticleDetailResponseDto> children = new ArrayList<>();
     for(Article child : article.getChildren()) {
+      // 답글 response dto 생성
       children.add(this.getDetailResponse(child, user));
     }
     builder.children(children);

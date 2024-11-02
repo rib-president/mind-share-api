@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @DynamicInsert
 @DynamicUpdate
@@ -60,10 +61,6 @@ public class Article {
   @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Article> children;
 
-  public void addChild(Article article) {
-    this.children.add(article);
-  }
-
   public Boolean isMine(User user) {
     if(this.author != null) {
       return user.getUserId().equals(this.author.getUserId());
@@ -73,6 +70,11 @@ public class Article {
 
   public void increaseViewCount() {
     this.viewCount++;
+  }
+
+  public void update(String title, String content) {
+    Optional.ofNullable(title).ifPresent(t -> this.title = t);
+    Optional.ofNullable(content).ifPresent(c -> this.content = c);
   }
 
 }
