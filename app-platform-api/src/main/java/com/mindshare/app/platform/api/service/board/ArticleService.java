@@ -16,4 +16,6 @@ public interface ArticleService {
                                   HttpServletResponse response);
 
   SuccessResponseDto updateOne(BigInteger articleId, ArticleUpdateRequestDto body);
+
+  void deleteOne(BigInteger articleId);
 }

@@ -31,6 +31,7 @@ public enum ApiExceptionEnum implements PublicException {
   // 409: 요청이 현재 서버의 상태와 충돌
   CONFLICT("E40900000", HttpStatus.CONFLICT),
 
+
   // 422: 요청은 올바르지만 문법 오류로 인하여 실행할 수 없음
   UNPROCESSABLE_ENTITY("E42200000", HttpStatus.UNPROCESSABLE_ENTITY),
 

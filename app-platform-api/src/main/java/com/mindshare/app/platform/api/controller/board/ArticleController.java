@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -39,6 +40,13 @@ public class ArticleController {
   public SuccessResponseDto updateOne(@PathVariable("articleId") BigInteger articleId,
                                       @Valid @RequestBody ArticleUpdateRequestDto body) {
     return service.updateOne(articleId, body);
+  }
+
+  @DeleteMapping("/{articleId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public ResponseEntity<Void> deleteOne(@PathVariable("articleId") BigInteger articleId) {
+    service.deleteOne(articleId);
+    return ResponseEntity.noContent().build();
   }
 
 }

@@ -127,6 +127,26 @@ public class ArticleServiceImpl implements ArticleService {
         .build();
   }
 
+  @Override
+  public void deleteOne(BigInteger articleId) {
+
+    // 사용자 정보 가져오기
+    User user = this.getUser();
+
+    // 게시글 정보 가져오기
+    Article article = articleRepository.findById(articleId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.ARTICLE_NOT_FOUND));
+
+    // 본인 게시글만 삭제 가능
+    if(!article.isMine(user)) {
+      throw new ApiException(ApiExceptionEnum.ARTICLE_REQUEST_FORBIDDEN);
+    }
+
+    // 게시글 삭제
+    articleRepository.delete(article);
+
+  }
+
   private User getUser() {
     SecurityUser securityUser = SecurityServiceImpl.getSecurityUserByToken();
     return securityUser.getUser();
