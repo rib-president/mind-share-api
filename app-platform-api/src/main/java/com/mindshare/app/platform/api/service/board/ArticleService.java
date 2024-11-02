@@ -4,6 +4,7 @@ import com.mindshare.app.platform.api.dto.board.ArticleCreateRequestDto;
 import com.mindshare.app.platform.api.dto.board.ArticleDetailResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleListResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleUpdateRequestDto;
+import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
@@ -23,4 +24,6 @@ public interface ArticleService {
   void deleteOne(BigInteger articleId);
 
   ListItemResponseDto<ArticleListResponseDto> getMany(String category, Pageable pageable);
+
+  ListItemResponseDto<ArticleListResponseDto> getManySearch(ArticleListRequestDto query, Pageable pageable);
 }

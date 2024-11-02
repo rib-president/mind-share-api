@@ -1,10 +1,12 @@
 package com.mindshare.app.platform.api.controller.board;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mindshare.app.platform.api.dto.board.ArticleCreateRequestDto;
 import com.mindshare.app.platform.api.dto.board.ArticleDetailResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleListResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleUpdateRequestDto;
 import com.mindshare.app.platform.api.service.board.ArticleService;
+import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
@@ -19,12 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/board/articles")
 @RequiredArgsConstructor
 public class ArticleController {
   private final ArticleService service;
+  private final ObjectMapper mapper;
 
   @PostMapping("")
   @ResponseStatus(HttpStatus.CREATED)
@@ -59,6 +63,15 @@ public class ArticleController {
   public ListItemResponseDto<ArticleListResponseDto> getMany(@RequestParam(value = "category", required = false) String category,
                                                              @PageableDefault(size = 10, sort = "createdDatetime", direction = Sort.Direction.DESC)Pageable pageable) {
     return service.getMany(category, pageable);
+  }
+
+  @GetMapping("/search")
+  @ResponseStatus(HttpStatus.OK)
+  public ListItemResponseDto<ArticleListResponseDto> getManySearch(@RequestParam Map<String, String> queryParam,
+                                                                   @PageableDefault(size = 10, sort = "createdDatetime", direction = Sort.Direction.DESC)Pageable pageable) {
+
+    ArticleListRequestDto query = mapper.convertValue(queryParam, ArticleListRequestDto.class);
+    return service.getManySearch(query, pageable);
   }
 
 }

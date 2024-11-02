@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -107,7 +106,7 @@ public class ExceptionAdvice {
     return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
-  private ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, @Nullable String detailMessageCode, @Nullable Object[] detailMessageArguments, WebRequest request) {
+  private ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, String detailMessageCode, Object[] detailMessageArguments, WebRequest request) {
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, defaultDetail);
     problemDetail.setDetail(defaultDetail);
     problemDetail.setInstance(URI.create(request.getDescription(false)));

@@ -12,6 +12,7 @@ import com.mindshare.app.platform.api.service.board.ArticleService;
 import com.mindshare.domain.board.entity.Article;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
+import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
@@ -168,23 +169,30 @@ public class ArticleServiceImpl implements ArticleService {
     List<Article> articles = pageItems.toList();
 
     // response dto
-    List<ArticleListResponseDto> items = articles.stream()
-        .map(article -> ArticleListResponseDto.builder()
-            .id(article.getArticleId().toString())
-            .category(article.getCategory().getLabel())
-            .authorName(article.getAuthorName())
-            .title(article.getTitle())
-            .viewCount(article.getViewCount())
-            .childrenCount(article.getChildren().size())
-            .createdDatetime(article.getCreatedDatetime())
-            .updatedDatetime(article.getUpdatedDatetime())
-            .build())
-        .toList();
+    List<ArticleListResponseDto> items = this.getListResponse(articles);
 
     return ListItemResponseDto.<ArticleListResponseDto>builder()
         .items(items)
         .total(total)
         .count(items.size())
+        .size(pageable.getPageSize())
+        .page(pageable.getPageNumber())
+        .build();
+  }
+
+  @Override
+  public ListItemResponseDto<ArticleListResponseDto> getManySearch(ArticleListRequestDto query, Pageable pageable) {
+
+    Page<Article> pageItems = articleRepository.findManyWithCriteria(query, pageable);
+    List<Article> articles = pageItems.toList();
+
+    // response dto
+    List<ArticleListResponseDto> items = this.getListResponse(articles);
+
+    return ListItemResponseDto.<ArticleListResponseDto>builder()
+        .items(items)
+        .total(pageItems.getTotalElements())
+        .count(pageItems.getNumberOfElements())
         .size(pageable.getPageSize())
         .page(pageable.getPageNumber())
         .build();
@@ -244,5 +252,21 @@ public class ArticleServiceImpl implements ArticleService {
     cookie.setMaxAge(60 * 60 * 4); // 4시간
     cookie.setPath("/");  // path 설정
     return cookie;
+  }
+
+  private List<ArticleListResponseDto> getListResponse(List<Article> articles) {
+    // response dto
+    return articles.stream()
+        .map(article -> ArticleListResponseDto.builder()
+            .id(article.getArticleId().toString())
+            .category(article.getCategory().getLabel())
+            .authorName(article.getAuthorName())
+            .title(article.getTitle())
+            .viewCount(article.getViewCount())
+            .childrenCount(article.getChildren().size())
+            .createdDatetime(article.getCreatedDatetime())
+            .updatedDatetime(article.getUpdatedDatetime())
+            .build())
+        .toList();
   }
 }

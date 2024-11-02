@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigInteger;
 
-public interface ArticleRepository extends JpaRepository<Article, BigInteger> {
+public interface ArticleRepository extends JpaRepository<Article, BigInteger>, ArticleCustomerRepository {
   Page<Article> findAllByParentIsNull(Pageable pageable);
 
   Long countAllByParentIsNull();
