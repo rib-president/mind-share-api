@@ -1,7 +1,6 @@
 package com.mindshare.domain.user.entity;
 
 import com.mindshare.domain.system.entity.Category;
-import com.mindshare.domain.user.embeddedkey.UserCategoryId;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -10,8 +9,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @DynamicInsert
 @DynamicUpdate
@@ -43,9 +42,11 @@ public class User {
   @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(32) COMMENT '사용자 이름'")
   private String name;
 
+  @Setter
   @Column(name = "birth_date", columnDefinition = "DATE COMMENT '생년월일'")
   private Date birthDate;
 
+  @Setter
   @Column(name = "alarm_agreed_datetime", columnDefinition = "TIMESTAMP(6) COMMENT '알림 수신 동의 일시'")
   private Timestamp alarmAgreedDatetime;
 
@@ -62,5 +63,35 @@ public class User {
     UserCategory userCategory = new UserCategory(this, category);
 
     this.userCategories.add(userCategory);
+  }
+
+  public void update(String emailAddress, String phoneNumber, String password, UserType userType,
+                     List<Category> categories, Boolean isCategoriesDirty, String name, Date birthDate,
+                     Boolean isBirthDateDirty, Timestamp alarmAgreedDatetime, Boolean isAlarmAgreedDatetimeDirty) {
+
+    Optional.ofNullable(emailAddress).ifPresent(e -> this.emailAddress = e);
+    Optional.ofNullable(phoneNumber).ifPresent(p -> this.phoneNumber = p);
+    Optional.ofNullable(password).ifPresent(p -> this.password = p);
+    Optional.ofNullable(userType).ifPresent(u -> this.userType = u);
+    Optional.ofNullable(name).ifPresent(n -> this.name = n);
+
+    if(isCategoriesDirty) {
+      this.updateUserCategories(categories);
+    }
+
+    if(isBirthDateDirty) {
+      this.birthDate = birthDate;
+    }
+
+    if(isAlarmAgreedDatetimeDirty) {
+      this.alarmAgreedDatetime = alarmAgreedDatetime;
+    }
+  }
+
+  private void updateUserCategories(List<Category> categories) {
+    this.getUserCategories().clear();
+    if (categories != null && !categories.isEmpty()) {
+      categories.forEach(this::addUserCategory);
+    }
   }
 }

@@ -17,12 +17,12 @@ public class UserCategory {
   @EmbeddedId
   private UserCategoryId id;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
   @MapsId("userId")
   @JoinColumn(name = "user_id", columnDefinition = "BIGINT UNSIGNED COMMENT '사용자 PK'")
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
   @MapsId("categoryId")
   @JoinColumn(name = "category_id", columnDefinition = "TINYINT UNSIGNED COMMENT '분야 PK'")
   private Category category;

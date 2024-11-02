@@ -10,8 +10,6 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MeDetailResponseDto {
   @NotBlank
   private String emailAddress;
@@ -29,6 +27,5 @@ public class MeDetailResponseDto {
 
   private Date birthDate;
 
-//  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
   private Timestamp alarmAgreedDatetime;
 }
