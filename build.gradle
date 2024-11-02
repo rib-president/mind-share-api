@@ -53,6 +53,10 @@ subprojects {
         implementation 'jakarta.validation:jakarta.validation-api:3.0.2' // Jakarta Validation
         implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final' // Hibernate Validator
 
+        implementation 'com.fasterxml.jackson.core:jackson-databind'
+        implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 

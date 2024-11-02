@@ -1,7 +1,5 @@
 package io.client.core.handler;
 
-// 인증은 완료하였으나 요청에 대해 권한을 가지고 있지 않은 사용자가 접근하려고 할 때
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.client.core.dto.ResponseDto;
 import jakarta.servlet.ServletException;
@@ -19,6 +17,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URI;
 
+
+// 인증은 완료하였으나 요청에 대해 권한을 가지고 있지 않은 사용자가 접근하려고 할 때
 @Slf4j
 @Component
 @RequiredArgsConstructor

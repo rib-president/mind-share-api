@@ -4,6 +4,8 @@ import com.mindshare.app.platform.api.repository.SecurityRepository;
 import com.mindshare.app.platform.api.securityUser.SecurityUser;
 import com.mindshare.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +28,14 @@ public class SecurityServiceImpl implements UserDetailsService {
         .username(user.getUserId().toString())
         .password(null)
         .authorities(null)
+        .id(userId)
         .build();
+  }
+
+  public static SecurityUser getSecurityUserByToken() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+
+    return securityUser;
   }
 }

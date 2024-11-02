@@ -3,12 +3,13 @@ package com.mindshare.domain.user.entity;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.embeddedkey.UserCategoryId;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "user__user_category")
 @Entity
 public class UserCategory {

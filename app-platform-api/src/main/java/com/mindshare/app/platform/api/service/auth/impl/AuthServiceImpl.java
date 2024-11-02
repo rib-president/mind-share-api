@@ -4,7 +4,6 @@ import com.mindshare.app.platform.api.dto.auth.*;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
 import com.mindshare.app.platform.api.repository.UserRepository;
 import com.mindshare.app.platform.api.repository.UserTypeRepository;
-import com.mindshare.app.platform.api.service.SecurityServiceImpl;
 import com.mindshare.app.platform.api.service.auth.AuthService;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
@@ -37,7 +36,6 @@ public class AuthServiceImpl implements AuthService {
 
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
-  private final SecurityServiceImpl securityService;
 
   @Override
   public JoinResponseDto join(JoinRequestDto body) {

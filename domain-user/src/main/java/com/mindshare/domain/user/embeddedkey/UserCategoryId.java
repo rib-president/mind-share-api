@@ -1,7 +1,5 @@
 package com.mindshare.domain.user.embeddedkey;
 
-import com.mindshare.domain.user.entity.User;
-import com.mindshare.domain.user.entity.UserCategory;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
@@ -12,6 +10,7 @@ import java.util.Objects;
 @Embeddable
 @Builder
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserCategoryId implements Serializable {
   private BigInteger userId;

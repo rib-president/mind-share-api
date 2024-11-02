@@ -7,6 +7,9 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,6 +19,26 @@ import java.net.URI;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
+  @ExceptionHandler(AuthenticationException.class)
+  protected ResponseEntity<ProblemDetail> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+
+    ProblemDetail body = createProblemDetail(ex, HttpStatus.UNAUTHORIZED, ex.getMessage(),
+        null, null, request);
+    body.setType(URI.create(request.getDescription(false)));
+
+//    ErrorResponse response = ErrorResponse.builder(ex, body).build(getMessageSource(), LocaleContextHolder.getLocale());
+    return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  protected ResponseEntity<ProblemDetail> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+    ProblemDetail body = createProblemDetail(ex, HttpStatus.FORBIDDEN, ex.getMessage(),
+        request.getDescription(false), new Object[]{}, request);
+    body.setType(URI.create(request.getDescription(false)));
+
+//    ErrorResponse response = ErrorResponse.builder(ex, body).build(getMessageSource(), LocaleContextHolder.getLocale());
+    return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+  }
 
   @ExceptionHandler(ApiException.class)
   protected ResponseEntity<ProblemDetail> handleApiException(ApiException ex, WebRequest request) {
@@ -49,6 +72,17 @@ public class ExceptionAdvice {
     body.setType(URI.create(request.getDescription(false)));
 
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(UsernameNotFoundException.class)
+  protected ResponseEntity<ProblemDetail> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
+    ex.printStackTrace();
+
+    ProblemDetail body = createProblemDetail(ex, HttpStatus.NOT_FOUND, ex.getMessage(),
+        request.getDescription(false), new Object[]{}, request);
+    body.setType(URI.create(request.getDescription(false)));
+
+    return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(RuntimeException.class)

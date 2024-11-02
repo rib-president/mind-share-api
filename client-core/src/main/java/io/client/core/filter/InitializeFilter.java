@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-public class InitializerFilter extends OncePerRequestFilter {
+public class InitializeFilter extends OncePerRequestFilter {
   private final JwtProvider jwtProvider;
 
 

@@ -29,17 +29,18 @@ public class DefaultAuthenticationEntryPoint implements AuthenticationEntryPoint
     log.error("Not Authenticated Request", authException);
     log.error("Request Uri : {}", request.getRequestURI());
 
+
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-        HttpStatus.UNAUTHORIZED, "UNAUTHENTICATED"
-    );
+        HttpStatus.UNAUTHORIZED, "UNAUTHENTICATED");
     problemDetail.setTitle("Unauthorized");
     problemDetail.setDetail(authException.getMessage());
     problemDetail.setInstance(URI.create(request.getRequestURI()));
     this.sendErrorResponse(request, response, problemDetail);
+
   }
 
-  private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response,
-                                 ProblemDetail problemDetail) throws IOException {
+  private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, ProblemDetail problemDetail) throws IOException {
+
     ResponseDto.ResponseDtoBuilder builder = ResponseDto.builder();
     builder.id(request.getAttribute("id"))
         .uri(request.getMethod() + " " + request.getRequestURI())
