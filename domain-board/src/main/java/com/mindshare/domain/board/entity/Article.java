@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.List;
 
 @DynamicInsert
 @DynamicUpdate
@@ -29,7 +30,7 @@ public class Article {
   @JoinColumn(name = "category_id", nullable = false, columnDefinition = "TINYINT UNSIGNED COMMENT '분야 FK'")
   private Category category;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   @JoinColumn(name = "author_id", columnDefinition = "BIGINT UNSIGNED COMMENT '작성자 FK'")
   private User author;
 
@@ -43,11 +44,11 @@ public class Article {
   private String content;
 
   @ColumnDefault("0")
-  @Column(name = "read_count", columnDefinition = "INT NOT NULL COMMENT '조회수'")
-  private Long readCount;
+  @Column(name = "view_count", columnDefinition = "INT NOT NULL COMMENT '조회수'")
+  private Long viewCount;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "parent_id", columnDefinition = "BIGINT UNSIGNED COMMENT '원글 FK'")
+  @JoinColumn(name = "parent_id", referencedColumnName = "article_id", columnDefinition = "BIGINT UNSIGNED COMMENT '원글 FK'")
   private Article parent;
 
   @Column(name = "created_datetime", columnDefinition = "TIMESTAMP(6) DEFAULT NOW(6) NOT NULL COMMENT '생성일'")
@@ -55,4 +56,23 @@ public class Article {
 
   @Column(name = "updated_datetime", columnDefinition = "TIMESTAMP(6) DEFAULT NOW(6) ON UPDATE NOW(6) NOT NULL COMMENT '변경일'")
   private Timestamp updatedDatetime;
+
+  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Article> children;
+
+  public void addChild(Article article) {
+    this.children.add(article);
+  }
+
+  public Boolean isMine(User user) {
+    if(this.author != null) {
+      return user.getUserId().equals(this.author.getUserId());
+    }
+    return false;
+  }
+
+  public void increaseViewCount() {
+    this.viewCount++;
+  }
+
 }

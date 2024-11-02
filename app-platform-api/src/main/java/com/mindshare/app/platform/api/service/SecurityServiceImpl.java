@@ -28,7 +28,7 @@ public class SecurityServiceImpl implements UserDetailsService {
         .username(user.getUserId().toString())
         .password(null)
         .authorities(null)
-        .id(userId)
+        .user(user)
         .build();
   }
 

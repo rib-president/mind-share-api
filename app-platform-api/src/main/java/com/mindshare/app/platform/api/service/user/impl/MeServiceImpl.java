@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +37,8 @@ public class MeServiceImpl implements MeService {
   @Override
   public MeDetailResponseDto getMe() {
 
-    // 토큰에서 유저 pk 가져오기
-    BigInteger userId = this.getUserId();
-
-    // 유저 정보 가져오기
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND));
+    // 토큰에서 유저 가져오기
+    User user = this.getUser();
 
     return MeDetailResponseDto.builder()
         .emailAddress(user.getEmailAddress())
@@ -60,12 +55,8 @@ public class MeServiceImpl implements MeService {
 
   @Override
   public SuccessResponseDto updateMe(MeUpdateRequestDto body) {
-    // 토큰에서 user pk 가져오기
-    BigInteger userId = this.getUserId();
-
-    // 정보 변경할 사용자 가져오기
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND));
+    // 토큰에서 user 가져오기
+    User user = this.getUser();
 
     // 비밀번호 변경할 경우 encoding
     String password = null;
@@ -106,9 +97,9 @@ public class MeServiceImpl implements MeService {
         .build();
   }
 
-  private BigInteger getUserId() {
-    // 토큰에서 유저 pk 가져오기
+  private User getUser() {
+    // 토큰에서 유저 가져오기
     SecurityUser securityUser = SecurityServiceImpl.getSecurityUserByToken();
-    return  securityUser.getId();
+    return  securityUser.getUser();
   }
 }
