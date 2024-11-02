@@ -9,6 +9,7 @@ public enum ApiExceptionEnum implements PublicException {
 
   // 401: 비인증(unauthenticated)된 요청 -> 서버는 클라이언트가 누군지 모름
   UNAUTHORIZED("E40100000", HttpStatus.UNAUTHORIZED),
+  PASSWORD_NOT_MATCH("E40100001", HttpStatus.UNAUTHORIZED),
 
   // 403: 콘텐츠에 접근할 권리 없음 -> 서버는 클라이언트가 누군지 알고 있음
   FORBIDDEN("E40300000", HttpStatus.FORBIDDEN),
@@ -47,5 +48,10 @@ public enum ApiExceptionEnum implements PublicException {
   @Override
   public HttpStatus getStatus() {
     return this.status;
+  }
+
+  @Override
+  public String getName() {
+    return this.name();
   }
 }

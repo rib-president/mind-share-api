@@ -10,22 +10,17 @@ import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.math.BigInteger;
 import java.util.Collection;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash(value = "refresh_token")
+@RedisHash(value = "refresh_token", timeToLive = 14400) // 4시간
 public class RefreshToken {
   @Id
   private String userId;
 
-  @Indexed
   private String token;
-
-  private Collection<? extends GrantedAuthority> authorities;
-
-  @TimeToLive
-  private long ttl;
 }

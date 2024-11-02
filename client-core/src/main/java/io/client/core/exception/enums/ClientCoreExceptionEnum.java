@@ -25,4 +25,9 @@ public enum ClientCoreExceptionEnum implements PublicException {
   public HttpStatus getStatus() {
     return this.status;
   }
+
+  @Override
+  public String getName() {
+    return this.name();
+  }
 }

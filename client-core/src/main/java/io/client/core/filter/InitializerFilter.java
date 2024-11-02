@@ -1,5 +1,6 @@
 package io.client.core.filter;
 
+import io.client.core.entity.RefreshToken;
 import io.client.core.enums.JwtCode;
 import io.client.core.exception.enums.ClientCoreExceptionEnum;
 import io.client.core.provider.JwtProvider;

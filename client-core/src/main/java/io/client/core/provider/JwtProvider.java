@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,8 +34,8 @@ public class JwtProvider {
 
   private final String AUTHORITIES_KEY = "AUTH";
 
-  private final long accessTokenExpiredTime = (60 * 1000) * 60 * 24 * 7;  // 7일
-  private final long refreshTokenExpiredTime = (60 * 1000) * 60 * 24 * 30;  // 30일
+  private final long accessTokenExpiredTime = (60 * 1000) * 30;  // 30분
+  private final long refreshTokenExpiredTime = (60 * 1000) * 60 * 4;  // 4시간
   private final RefreshTokenRepository refreshTokenRepository;
   private final UserDetailsService userDetailsService;
 
@@ -100,8 +101,14 @@ public class JwtProvider {
     }
   }
 
-  public RefreshToken getRefreshToken(String userId) {
-    return refreshTokenRepository.findByUserId(userId)
+  public RefreshToken getRefreshToken(String token) {
+    Claims claims = Jwts.parserBuilder()
+        .setSigningKey(key)
+        .build()
+        .parseClaimsJws(token)
+        .getBody();
+
+    return refreshTokenRepository.findByUserId(claims.getSubject())
         .orElseThrow(() -> new IllegalArgumentException("refresh token이 존재하지 않습니다."));
   }
 

@@ -5,4 +5,6 @@ import org.springframework.http.HttpStatus;
 public interface PublicException {
   String getCode();
   HttpStatus getStatus();
+
+  String getName();
 }
