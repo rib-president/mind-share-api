@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 public enum ApiExceptionEnum implements PublicException {
   // 400: 잘못된 문법으로 인하여 서버가 요청을 이해할 수 없음
   BAD_REQUEST("E40000000", HttpStatus.BAD_REQUEST),
+  REFRESH_TOKEN_REQUIRED("E40000001", HttpStatus.BAD_REQUEST),
 
   // 401: 비인증(unauthenticated)된 요청 -> 서버는 클라이언트가 누군지 모름
   UNAUTHORIZED("E40100000", HttpStatus.UNAUTHORIZED),
@@ -15,7 +16,8 @@ public enum ApiExceptionEnum implements PublicException {
   FORBIDDEN("E40300000", HttpStatus.FORBIDDEN),
 
   // 404: 요청받은 리소스를 찾을 수 없음
-  NOT_FOUND("E40444444", HttpStatus.NOT_FOUND),
+  NOT_FOUND("E40400000", HttpStatus.NOT_FOUND),
+  USER_NOT_FOUND("E40400001", HttpStatus.NOT_FOUND),
 
   // 405: 제거되었거나 사용할 수 없는 메소드 요청
   METHOD_NOT_ALLOWED("E40500000", HttpStatus.METHOD_NOT_ALLOWED),

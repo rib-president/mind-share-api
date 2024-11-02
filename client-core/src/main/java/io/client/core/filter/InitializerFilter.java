@@ -1,16 +1,12 @@
 package io.client.core.filter;
 
-import io.client.core.entity.RefreshToken;
 import io.client.core.enums.JwtCode;
 import io.client.core.exception.enums.ClientCoreExceptionEnum;
 import io.client.core.provider.JwtProvider;
 import io.system.core.exception.ApiException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Slf4j
@@ -56,7 +48,7 @@ public class InitializerFilter extends OncePerRequestFilter {
       // 만료된 access token
       log.info("Access token expired");
 
-      String refreshToken = request.getHeader("Refresh");
+      String refreshToken = request.getHeader("X-Refresh-Token");
       JwtCode refreshValidateCode = jwtProvider.validateToken(refreshToken);
 
       // refresh token이 header에 있고 만료되지 않음

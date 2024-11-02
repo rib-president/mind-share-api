@@ -2,12 +2,14 @@ package io.client.core.provider;
 
 import io.client.core.entity.RefreshToken;
 import io.client.core.enums.JwtCode;
+import io.client.core.exception.enums.ClientCoreExceptionEnum;
 import io.client.core.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.system.core.exception.ApiException;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +21,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import java.math.BigInteger;
 import java.security.Key;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -101,15 +101,20 @@ public class JwtProvider {
     }
   }
 
-  public RefreshToken getRefreshToken(String token) {
+  public RefreshToken getRefreshToken(String userId) {
+
+    return refreshTokenRepository.findById(userId)
+        .orElseThrow(() -> new ApiException(ClientCoreExceptionEnum.EXPIRED_REFRESH_TOKEN));
+  }
+
+  public String getSubject(String token) {
     Claims claims = Jwts.parserBuilder()
         .setSigningKey(key)
         .build()
         .parseClaimsJws(token)
         .getBody();
 
-    return refreshTokenRepository.findByUserId(claims.getSubject())
-        .orElseThrow(() -> new IllegalArgumentException("refresh token이 존재하지 않습니다."));
+    return claims.getSubject();
   }
 
 }

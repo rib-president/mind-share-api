@@ -10,4 +10,6 @@ public interface AuthService {
   DuplicateCheckResponseDto duplicateCheckEmail(DuplicateCheckRequestDto body);
   DuplicateCheckResponseDto duplicateCheckPhone(DuplicateCheckRequestDto body);
 
+  ReissueTokenResponseDto reissueToken(String refreshToken);
+
 }

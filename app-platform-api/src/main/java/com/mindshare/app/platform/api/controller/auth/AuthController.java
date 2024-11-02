@@ -36,4 +36,10 @@ public class AuthController {
   public DuplicateCheckResponseDto duplicateCheckPhone(@Valid @RequestBody DuplicateCheckRequestDto body) {
     return service.duplicateCheckPhone(body);
   }
+
+  @PostMapping("reissue-token")
+  @ResponseStatus(HttpStatus.OK)
+  public ReissueTokenResponseDto reissueToken(@RequestHeader("X-Refresh-Token") String refreshToken) {
+    return service.reissueToken(refreshToken);
+  }
 }

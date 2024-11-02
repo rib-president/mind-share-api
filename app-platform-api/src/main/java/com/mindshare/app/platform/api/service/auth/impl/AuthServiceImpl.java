@@ -4,11 +4,13 @@ import com.mindshare.app.platform.api.dto.auth.*;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
 import com.mindshare.app.platform.api.repository.UserRepository;
 import com.mindshare.app.platform.api.repository.UserTypeRepository;
+import com.mindshare.app.platform.api.service.SecurityServiceImpl;
 import com.mindshare.app.platform.api.service.auth.AuthService;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
 import com.mindshare.domain.user.entity.UserType;
 import io.client.core.entity.RefreshToken;
+import io.client.core.exception.enums.ClientCoreExceptionEnum;
 import io.client.core.provider.JwtProvider;
 import io.client.core.repository.RefreshTokenRepository;
 import io.system.core.exception.ApiException;
@@ -35,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
 
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
+  private final SecurityServiceImpl securityService;
 
   @Override
   public JoinResponseDto join(JoinRequestDto body) {
@@ -86,9 +89,9 @@ public class AuthServiceImpl implements AuthService {
     // 로그인 타입에 따른 사용자 정보 가져오기
     User user = switch (body.getLoginType()) {
       case EMAIL ->
-          userRepository.findByEmailAddress(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND));
+          userRepository.findByEmailAddress(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND));
       case PHONE ->
-          userRepository.findByPhoneNumber(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND));
+          userRepository.findByPhoneNumber(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND));
     };
 
     // 비밀번호 불일치
@@ -120,6 +123,33 @@ public class AuthServiceImpl implements AuthService {
 
     return DuplicateCheckResponseDto.builder()
         .isAvailable(!isExists)
+        .build();
+  }
+
+  @Override
+  public ReissueTokenResponseDto reissueToken(String refreshToken) {
+
+    if(refreshToken == null) {
+      throw new ApiException(ApiExceptionEnum.REFRESH_TOKEN_REQUIRED);
+    }
+
+    // 토큰에서 user pk 찾아오기
+    String userId = jwtProvider.getSubject(refreshToken);
+
+    // redis에서 refresh token 찾아오기
+    RefreshToken cachedRefreshToken = jwtProvider.getRefreshToken(userId);
+
+    // redis에서 찾아온 토큰과 header에 들어있던 토큰과 불일치 -> 토큰 만료
+    if(!refreshToken.equals(cachedRefreshToken.getToken())) {
+      throw new ApiException(ClientCoreExceptionEnum.EXPIRED_REFRESH_TOKEN);
+    }
+
+    // 토큰 재발급
+    Pair<String, String> tokens = this.generateTokens(userId, new ArrayList<>());
+
+    return ReissueTokenResponseDto.builder()
+        .accessToken(tokens.a)
+        .refreshToken(tokens.b)
         .build();
   }
 
