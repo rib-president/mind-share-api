@@ -230,7 +230,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   private Boolean isViewedArticle(String cookieValue, String articleCookieValue) {
     if(cookieValue == null) {
-      return true;
+      return false;
     }
 
     String[] cookieValues = cookieValue.split("-");
