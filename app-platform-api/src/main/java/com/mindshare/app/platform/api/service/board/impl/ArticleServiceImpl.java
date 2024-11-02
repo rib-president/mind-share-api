@@ -2,6 +2,7 @@ package com.mindshare.app.platform.api.service.board.impl;
 
 import com.mindshare.app.platform.api.dto.board.ArticleCreateRequestDto;
 import com.mindshare.app.platform.api.dto.board.ArticleDetailResponseDto;
+import com.mindshare.app.platform.api.dto.board.ArticleListResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleUpdateRequestDto;
 import com.mindshare.app.platform.api.repository.ArticleRepository;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
@@ -12,6 +13,7 @@ import com.mindshare.domain.board.entity.Article;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
 import io.client.core.dto.CreateResponseDto;
+import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
 import io.system.core.exception.ApiException;
 import io.system.core.exception.enums.ApiExceptionEnum;
@@ -20,6 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -145,6 +149,45 @@ public class ArticleServiceImpl implements ArticleService {
     // 게시글 삭제
     articleRepository.delete(article);
 
+  }
+
+  @Override
+  public ListItemResponseDto<ArticleListResponseDto> getMany(String category, Pageable pageable) {
+
+    Page<Article> pageItems;
+    Long total;
+    if(category == null) {
+      // 전체 리스트 조회(답글 제외)
+      pageItems = articleRepository.findAllByParentIsNull(pageable);
+      total = articleRepository.countAllByParentIsNull();
+    } else {
+      // 분야별 리스트 조회(답글 제외)
+      pageItems = articleRepository.findAllByParentIsNullAndCategory_Label(category, pageable);
+      total = articleRepository.countAllByParentIsNullAndCategory_Label(category);
+    }
+    List<Article> articles = pageItems.toList();
+
+    // response dto
+    List<ArticleListResponseDto> items = articles.stream()
+        .map(article -> ArticleListResponseDto.builder()
+            .id(article.getArticleId().toString())
+            .category(article.getCategory().getLabel())
+            .authorName(article.getAuthorName())
+            .title(article.getTitle())
+            .viewCount(article.getViewCount())
+            .childrenCount(article.getChildren().size())
+            .createdDatetime(article.getCreatedDatetime())
+            .updatedDatetime(article.getUpdatedDatetime())
+            .build())
+        .toList();
+
+    return ListItemResponseDto.<ArticleListResponseDto>builder()
+        .items(items)
+        .total(total)
+        .count(items.size())
+        .size(pageable.getPageSize())
+        .page(pageable.getPageNumber())
+        .build();
   }
 
   private User getUser() {
