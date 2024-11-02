@@ -1,4 +1,4 @@
-package com.mindshare.app.platform.api.dto.me;
+package com.mindshare.app.platform.api.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

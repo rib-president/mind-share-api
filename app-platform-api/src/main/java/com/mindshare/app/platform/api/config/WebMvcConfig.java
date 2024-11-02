@@ -35,20 +35,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .maxAge(3600);
   }
 
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//      ObjectMapper objectMapper = new ObjectMapper();
-//
-//      objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
-//
-//      objectMapper.registerModule(new JavaTimeModule());
-//      objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-//      objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-//      objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-//
-//      MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper);
-//      converters.add(0, converter);
-//    }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

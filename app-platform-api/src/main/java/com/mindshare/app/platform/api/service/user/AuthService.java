@@ -1,6 +1,7 @@
-package com.mindshare.app.platform.api.service.auth;
+package com.mindshare.app.platform.api.service.user;
 
-import com.mindshare.app.platform.api.dto.auth.*;
+
+import com.mindshare.app.platform.api.dto.user.*;
 
 public interface AuthService {
   JoinResponseDto join(JoinRequestDto body);

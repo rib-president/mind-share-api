@@ -1,13 +1,13 @@
-package com.mindshare.app.platform.api.service.me.impl;
+package com.mindshare.app.platform.api.service.user.impl;
 
-import com.mindshare.app.platform.api.dto.me.MeDetailResponseDto;
-import com.mindshare.app.platform.api.dto.me.MeUpdateRequestDto;
+import com.mindshare.app.platform.api.dto.user.MeDetailResponseDto;
+import com.mindshare.app.platform.api.dto.user.MeUpdateRequestDto;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
 import com.mindshare.app.platform.api.repository.UserRepository;
 import com.mindshare.app.platform.api.repository.UserTypeRepository;
 import com.mindshare.app.platform.api.securityUser.SecurityUser;
 import com.mindshare.app.platform.api.service.SecurityServiceImpl;
-import com.mindshare.app.platform.api.service.me.MeService;
+import com.mindshare.app.platform.api.service.user.MeService;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
 import com.mindshare.domain.user.entity.UserType;

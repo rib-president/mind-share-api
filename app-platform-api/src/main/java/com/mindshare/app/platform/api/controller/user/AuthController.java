@@ -1,7 +1,7 @@
-package com.mindshare.app.platform.api.controller.auth;
+package com.mindshare.app.platform.api.controller.user;
 
-import com.mindshare.app.platform.api.dto.auth.*;
-import com.mindshare.app.platform.api.service.auth.AuthService;
+import com.mindshare.app.platform.api.dto.user.*;
+import com.mindshare.app.platform.api.service.user.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

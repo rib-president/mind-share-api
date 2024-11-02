@@ -69,6 +69,7 @@ project(':app-platform-api') {
     dependencies {
         implementation project(':client-core')
         implementation project(':domain-user')
+        implementation project(':domain-board')
         implementation project(':domain-system')
         implementation project(':system-core')
     }
@@ -90,6 +91,17 @@ project(':domain-user') {
     }
 
     dependencies {
+        implementation project(':domain-system')
+    }
+}
+
+project(':domain-board') {
+    bootJar {
+        enabled=false
+    }
+
+    dependencies {
+        implementation project(':domain-user')
         implementation project(':domain-system')
     }
 }

@@ -1,4 +1,4 @@
-package com.mindshare.app.platform.api.dto.me;
+package com.mindshare.app.platform.api.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mindshare.domain.user.enums.UserType;

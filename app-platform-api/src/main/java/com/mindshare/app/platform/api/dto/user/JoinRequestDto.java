@@ -1,4 +1,4 @@
-package com.mindshare.app.platform.api.dto.auth;
+package com.mindshare.app.platform.api.dto.user;
 
 import com.mindshare.domain.user.enums.UserType;
 import jakarta.validation.constraints.NotBlank;

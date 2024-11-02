@@ -1,8 +1,8 @@
-package com.mindshare.app.platform.api.controller.me;
+package com.mindshare.app.platform.api.controller.user;
 
-import com.mindshare.app.platform.api.dto.me.MeDetailResponseDto;
-import com.mindshare.app.platform.api.dto.me.MeUpdateRequestDto;
-import com.mindshare.app.platform.api.service.me.MeService;
+import com.mindshare.app.platform.api.dto.user.MeDetailResponseDto;
+import com.mindshare.app.platform.api.dto.user.MeUpdateRequestDto;
+import com.mindshare.app.platform.api.service.user.MeService;
 import io.client.core.dto.SuccessResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

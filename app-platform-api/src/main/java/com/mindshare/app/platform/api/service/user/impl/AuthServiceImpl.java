@@ -1,10 +1,10 @@
-package com.mindshare.app.platform.api.service.auth.impl;
+package com.mindshare.app.platform.api.service.user.impl;
 
-import com.mindshare.app.platform.api.dto.auth.*;
+import com.mindshare.app.platform.api.dto.user.*;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
 import com.mindshare.app.platform.api.repository.UserRepository;
 import com.mindshare.app.platform.api.repository.UserTypeRepository;
-import com.mindshare.app.platform.api.service.auth.AuthService;
+import com.mindshare.app.platform.api.service.user.AuthService;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
 import com.mindshare.domain.user.entity.UserType;
