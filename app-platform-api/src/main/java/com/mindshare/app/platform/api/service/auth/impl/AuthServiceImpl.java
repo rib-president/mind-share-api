@@ -1,9 +1,6 @@
 package com.mindshare.app.platform.api.service.auth.impl;
 
-import com.mindshare.app.platform.api.dto.auth.JoinRequestDto;
-import com.mindshare.app.platform.api.dto.auth.JoinResponseDto;
-import com.mindshare.app.platform.api.dto.auth.LoginRequestDto;
-import com.mindshare.app.platform.api.dto.auth.LoginResponseDto;
+import com.mindshare.app.platform.api.dto.auth.*;
 import com.mindshare.app.platform.api.repository.CategoryRepository;
 import com.mindshare.app.platform.api.repository.UserRepository;
 import com.mindshare.app.platform.api.repository.UserTypeRepository;
@@ -88,12 +85,14 @@ public class AuthServiceImpl implements AuthService {
 
     // 로그인 타입에 따른 사용자 정보 가져오기
     User user = switch (body.getLoginType()) {
-      case EMAIL -> userRepository.findByEmailAddress(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND));
-      case PHONE -> userRepository.findByPhoneNumber(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND));
+      case EMAIL ->
+          userRepository.findByEmailAddress(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND));
+      case PHONE ->
+          userRepository.findByPhoneNumber(body.getUsername()).orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND));
     };
 
     // 비밀번호 불일치
-    if(!passwordEncoder.matches(body.getPassword(), user.getPassword())) {
+    if (!passwordEncoder.matches(body.getPassword(), user.getPassword())) {
       throw new ApiException(ApiExceptionEnum.PASSWORD_NOT_MATCH);
     }
 
@@ -103,6 +102,24 @@ public class AuthServiceImpl implements AuthService {
     return LoginResponseDto.builder()
         .accessToken(tokens.a)
         .refreshToken(tokens.b)
+        .build();
+  }
+
+  @Override
+  public DuplicateCheckResponseDto duplicateCheckEmail(DuplicateCheckRequestDto body) {
+    Boolean isExists = userRepository.existsByEmailAddress(body.getUsername());
+
+    return DuplicateCheckResponseDto.builder()
+        .isAvailable(!isExists)
+        .build();
+  }
+
+  @Override
+  public DuplicateCheckResponseDto duplicateCheckPhone(DuplicateCheckRequestDto body) {
+    Boolean isExists = userRepository.existsByPhoneNumber(body.getUsername());
+
+    return DuplicateCheckResponseDto.builder()
+        .isAvailable(!isExists)
         .build();
   }
 

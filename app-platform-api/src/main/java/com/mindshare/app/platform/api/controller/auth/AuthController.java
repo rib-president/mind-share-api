@@ -1,9 +1,6 @@
 package com.mindshare.app.platform.api.controller.auth;
 
-import com.mindshare.app.platform.api.dto.auth.JoinRequestDto;
-import com.mindshare.app.platform.api.dto.auth.JoinResponseDto;
-import com.mindshare.app.platform.api.dto.auth.LoginRequestDto;
-import com.mindshare.app.platform.api.dto.auth.LoginResponseDto;
+import com.mindshare.app.platform.api.dto.auth.*;
 import com.mindshare.app.platform.api.service.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +23,17 @@ public class AuthController {
   @ResponseStatus(HttpStatus.OK)
   public LoginResponseDto login(@Valid @RequestBody LoginRequestDto body) {
     return service.login(body);
+  }
+
+  @PostMapping("/duplicate-check/email")
+  @ResponseStatus(HttpStatus.OK)
+  public DuplicateCheckResponseDto duplicateCheckEmail(@Valid @RequestBody DuplicateCheckRequestDto body) {
+    return service.duplicateCheckEmail(body);
+  }
+
+  @PostMapping("/duplicate-check/phone")
+  @ResponseStatus(HttpStatus.OK)
+  public DuplicateCheckResponseDto duplicateCheckPhone(@Valid @RequestBody DuplicateCheckRequestDto body) {
+    return service.duplicateCheckPhone(body);
   }
 }
