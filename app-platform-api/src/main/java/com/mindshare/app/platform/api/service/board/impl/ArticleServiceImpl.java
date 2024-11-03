@@ -239,14 +239,18 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   private Cookie createCookie(String currentCookieValue, String addedCookieValue) {
-    String cookieValue = null;
+    String cookieValue;
     if(currentCookieValue == null) {
       cookieValue = addedCookieValue;
-    } else if(currentCookieValue.length() > 4096){
-      // 쿠키의 최대 크기보다 크면 오래된 것부터 삭제
-      cookieValue = currentCookieValue.substring(currentCookieValue.indexOf("-") + 1);
+    } else {
+      if(currentCookieValue.length() > 4096){
+        // 쿠키의 최대 크기보다 크면 오래된 것부터 삭제
+        currentCookieValue = currentCookieValue.substring(currentCookieValue.indexOf("-") + 1);
+      }
+
+      cookieValue = currentCookieValue + "-" + addedCookieValue;
     }
-    cookieValue += "-" + addedCookieValue;
+
 
     Cookie cookie = new Cookie(COOKIE_NAME, cookieValue);
     cookie.setMaxAge(60 * 60 * 4); // 4시간
