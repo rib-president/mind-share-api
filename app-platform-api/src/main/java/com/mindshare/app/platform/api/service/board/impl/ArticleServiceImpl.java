@@ -19,7 +19,6 @@ import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
 import io.system.core.exception.ApiException;
 import io.system.core.exception.enums.ApiExceptionEnum;
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -84,29 +82,16 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  @DistributedLock(key = "#articleId")
-  public ArticleDetailResponseDto getOne(BigInteger articleId
-//                                        , String viewedArticlesCookie,
-//                                         HttpServletResponse response
-  ) {
+  @DistributedLock(key = "#p0")
+  public ArticleDetailResponseDto getOne(BigInteger articleId, SecurityUser securityUser) {
 
     // 사용자 pk 가져오기
-    User user = this.getUser();
+    User user = securityUser.getUser();
 
     // 게시글 가져오기
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.ARTICLE_NOT_FOUND));
 
-//    // 조회수 증가: 읽은 게시물 pk를 쿠키에 [1],[2] 포맷으로 저장하여 무제한 증가 제한
-//    String articleCookieValue = "[" + articleId.toString() + "]";
-//    if(!this.isViewedArticle(viewedArticlesCookie, articleCookieValue)) {
-//      // 이미 읽은 게시물이 아니라면 조회수 증가
-//      article.increaseViewCount();
-//      articleRepository.save(article);
-//
-//      // 현재 게시물 pk 쿠키에 저장
-//      response.addCookie(this.createCookie(viewedArticlesCookie, articleCookieValue));
-//    }
     article.increaseViewCount();
     articleRepository.save(article);
 
@@ -235,36 +220,6 @@ public class ArticleServiceImpl implements ArticleService {
     builder.children(children);
 
     return builder.build();
-  }
-
-  private Boolean isViewedArticle(String cookieValue, String articleCookieValue) {
-    if(cookieValue == null) {
-      return false;
-    }
-
-    String[] cookieValues = cookieValue.split("-");
-    return Arrays.stream(cookieValues).toList()
-        .contains(articleCookieValue);
-  }
-
-  private Cookie createCookie(String currentCookieValue, String addedCookieValue) {
-    String cookieValue;
-    if(currentCookieValue == null) {
-      cookieValue = addedCookieValue;
-    } else {
-      if(currentCookieValue.length() > 4096){
-        // 쿠키의 최대 크기보다 크면 오래된 것부터 삭제
-        currentCookieValue = currentCookieValue.substring(currentCookieValue.indexOf("-") + 1);
-      }
-
-      cookieValue = currentCookieValue + "-" + addedCookieValue;
-    }
-
-
-    Cookie cookie = new Cookie(COOKIE_NAME, cookieValue);
-    cookie.setMaxAge(60 * 60 * 4); // 4시간
-    cookie.setPath("/");  // path 설정
-    return cookie;
   }
 
   private List<ArticleListResponseDto> getListResponse(List<Article> articles) {

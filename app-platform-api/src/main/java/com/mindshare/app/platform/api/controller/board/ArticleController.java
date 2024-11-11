@@ -5,6 +5,7 @@ import com.mindshare.app.platform.api.dto.board.ArticleCreateRequestDto;
 import com.mindshare.app.platform.api.dto.board.ArticleDetailResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleListResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleUpdateRequestDto;
+import com.mindshare.app.platform.api.securityUser.SecurityUser;
 import com.mindshare.app.platform.api.service.board.ArticleService;
 import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -37,12 +39,9 @@ public class ArticleController {
 
   @GetMapping("/{articleId}")
   @ResponseStatus(HttpStatus.OK)
-  public ArticleDetailResponseDto getOne(@PathVariable("articleId") BigInteger articleId
-//      , @CookieValue(name = "viewedArticles", required = false) String viewedArticlesCookie, HttpServletResponse response
-  ) {
-    return service.getOne(articleId
-//        , viewedArticlesCookie, response
-    );
+  public ArticleDetailResponseDto getOne(@PathVariable("articleId") BigInteger articleId,
+                                         @AuthenticationPrincipal SecurityUser securityUser) {
+    return service.getOne(articleId, securityUser);
   }
 
   @PatchMapping("/{articleId}")

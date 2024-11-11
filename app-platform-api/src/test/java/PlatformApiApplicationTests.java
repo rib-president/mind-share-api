@@ -71,7 +71,7 @@ public class PlatformApiApplicationTests {
     for (int i = 0; i < numberOfThreads; i++) {
       executorService.submit(() -> {
         try {
-          articleService.getOne(articleId);
+          articleService.getOne(articleId, null);
         } catch (Exception e) {
           e.printStackTrace();
         } finally {

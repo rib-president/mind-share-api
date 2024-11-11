@@ -4,6 +4,7 @@ import com.mindshare.app.platform.api.dto.board.ArticleCreateRequestDto;
 import com.mindshare.app.platform.api.dto.board.ArticleDetailResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleListResponseDto;
 import com.mindshare.app.platform.api.dto.board.ArticleUpdateRequestDto;
+import com.mindshare.app.platform.api.securityUser.SecurityUser;
 import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
@@ -15,9 +16,7 @@ import java.math.BigInteger;
 public interface ArticleService {
   CreateResponseDto<String> createOne(ArticleCreateRequestDto body);
 
-  ArticleDetailResponseDto getOne(BigInteger articleId
-//      , String viewedArticlesCookie, HttpServletResponse response
-  );
+  ArticleDetailResponseDto getOne(BigInteger articleId, SecurityUser securityUser);
 
   SuccessResponseDto updateOne(BigInteger articleId, ArticleUpdateRequestDto body);
 
