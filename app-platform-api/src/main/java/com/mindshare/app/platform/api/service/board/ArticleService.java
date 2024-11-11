@@ -8,7 +8,6 @@ import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigInteger;
@@ -16,8 +15,9 @@ import java.math.BigInteger;
 public interface ArticleService {
   CreateResponseDto<String> createOne(ArticleCreateRequestDto body);
 
-  ArticleDetailResponseDto getOne(BigInteger articleId, String viewedArticlesCookie,
-                                  HttpServletResponse response);
+  ArticleDetailResponseDto getOne(BigInteger articleId
+//      , String viewedArticlesCookie, HttpServletResponse response
+  );
 
   SuccessResponseDto updateOne(BigInteger articleId, ArticleUpdateRequestDto body);
 

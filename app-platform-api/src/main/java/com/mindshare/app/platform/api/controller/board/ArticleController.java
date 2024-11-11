@@ -10,7 +10,6 @@ import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
 import io.client.core.dto.SuccessResponseDto;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -38,10 +37,12 @@ public class ArticleController {
 
   @GetMapping("/{articleId}")
   @ResponseStatus(HttpStatus.OK)
-  public ArticleDetailResponseDto getOne(@PathVariable("articleId") BigInteger articleId,
-                                         @CookieValue(name = "viewedArticles", required = false) String viewedArticlesCookie,
-                                         HttpServletResponse response) {
-    return service.getOne(articleId, viewedArticlesCookie, response);
+  public ArticleDetailResponseDto getOne(@PathVariable("articleId") BigInteger articleId
+//      , @CookieValue(name = "viewedArticles", required = false) String viewedArticlesCookie, HttpServletResponse response
+  ) {
+    return service.getOne(articleId
+//        , viewedArticlesCookie, response
+    );
   }
 
   @PatchMapping("/{articleId}")

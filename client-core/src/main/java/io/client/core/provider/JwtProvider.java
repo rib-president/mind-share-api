@@ -34,8 +34,11 @@ public class JwtProvider {
 
   private final String AUTHORITIES_KEY = "AUTH";
 
-  private final long accessTokenExpiredTime = (60 * 1000) * 30;  // 30분
-  private final long refreshTokenExpiredTime = (60 * 1000) * 60 * 4;  // 4시간
+  @Value("${jwt.accessTokenExpiredTime}")
+  private long accessTokenExpiredTime;
+  @Value("${jwt.refreshTokenExpiredTime}")
+  private long refreshTokenExpiredTime;
+
   private final RefreshTokenRepository refreshTokenRepository;
   private final UserDetailsService userDetailsService;
 

@@ -41,7 +41,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth ->
             auth
                 .requestMatchers("/favicon.ico", "/v1/auth/**").permitAll()
-//                .requestMatchers("/v1/**").permitAll()
+                .requestMatchers("/v1/**").permitAll()
                 .anyRequest().authenticated())
         /**
          * UsernamePasswordAuthenticationFilter에서 아이디, 패스워드로 유저 인증 검증 함

@@ -12,6 +12,7 @@ import com.mindshare.app.platform.api.service.board.ArticleService;
 import com.mindshare.domain.board.entity.Article;
 import com.mindshare.domain.system.entity.Category;
 import com.mindshare.domain.user.entity.User;
+import io.client.core.aop.annotation.DistributedLock;
 import io.client.core.dto.ArticleListRequestDto;
 import io.client.core.dto.CreateResponseDto;
 import io.client.core.dto.ListItemResponseDto;
@@ -19,7 +20,6 @@ import io.client.core.dto.SuccessResponseDto;
 import io.system.core.exception.ApiException;
 import io.system.core.exception.enums.ApiExceptionEnum;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,6 @@ import java.util.List;
 
 @Service
 @Slf4j
-@Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
@@ -46,6 +45,7 @@ public class ArticleServiceImpl implements ArticleService {
   private String COOKIE_NAME;
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public CreateResponseDto<String> createOne(ArticleCreateRequestDto body) {
 
     // 현재 사용자 정보 가져오기
@@ -84,8 +84,11 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDetailResponseDto getOne(BigInteger articleId, String viewedArticlesCookie,
-                                         HttpServletResponse response) {
+  @DistributedLock(key = "#articleId")
+  public ArticleDetailResponseDto getOne(BigInteger articleId
+//                                        , String viewedArticlesCookie,
+//                                         HttpServletResponse response
+  ) {
 
     // 사용자 pk 가져오기
     User user = this.getUser();
@@ -94,21 +97,24 @@ public class ArticleServiceImpl implements ArticleService {
     Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.ARTICLE_NOT_FOUND));
 
-    // 조회수 증가: 읽은 게시물 pk를 쿠키에 [1],[2] 포맷으로 저장하여 무제한 증가 제한
-    String articleCookieValue = "[" + articleId.toString() + "]";
-    if(!this.isViewedArticle(viewedArticlesCookie, articleCookieValue)) {
-      // 이미 읽은 게시물이 아니라면 조회수 증가
-      article.increaseViewCount();
-      articleRepository.save(article);
-
-      // 현재 게시물 pk 쿠키에 저장
-      response.addCookie(this.createCookie(viewedArticlesCookie, articleCookieValue));
-    }
+//    // 조회수 증가: 읽은 게시물 pk를 쿠키에 [1],[2] 포맷으로 저장하여 무제한 증가 제한
+//    String articleCookieValue = "[" + articleId.toString() + "]";
+//    if(!this.isViewedArticle(viewedArticlesCookie, articleCookieValue)) {
+//      // 이미 읽은 게시물이 아니라면 조회수 증가
+//      article.increaseViewCount();
+//      articleRepository.save(article);
+//
+//      // 현재 게시물 pk 쿠키에 저장
+//      response.addCookie(this.createCookie(viewedArticlesCookie, articleCookieValue));
+//    }
+    article.increaseViewCount();
+    articleRepository.save(article);
 
     return this.getDetailResponse(article, user);
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public SuccessResponseDto updateOne(BigInteger articleId, ArticleUpdateRequestDto body) {
 
     // 사용자 정보 가져오기
@@ -133,6 +139,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void deleteOne(BigInteger articleId) {
 
     // 사용자 정보 가져오기
@@ -153,6 +160,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public ListItemResponseDto<ArticleListResponseDto> getMany(String category, Pageable pageable) {
 
     Page<Article> pageItems;
@@ -181,6 +189,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public ListItemResponseDto<ArticleListResponseDto> getManySearch(ArticleListRequestDto query, Pageable pageable) {
 
     Page<Article> pageItems = articleRepository.findManyWithCriteria(query, pageable);

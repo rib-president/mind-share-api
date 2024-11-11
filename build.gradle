@@ -35,6 +35,10 @@ subprojects {
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = '17'
 
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += ['-parameters']
+    }
+
     configurations {
         compileOnly {
             extendsFrom annotationProcessor

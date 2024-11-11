@@ -27,7 +27,7 @@ public class Article {
   @Column(name = "article_id", columnDefinition = "BIGINT UNSIGNED AUTO_INCREMENT COMMENT '게시글 PK'")
   private BigInteger articleId;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = false)
   @JoinColumn(name = "category_id", nullable = false, columnDefinition = "TINYINT UNSIGNED COMMENT '분야 FK'")
   private Category category;
 
